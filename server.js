@@ -18,10 +18,17 @@ Tono poético pero claro.
 
 app.post("/chat", async (req, res) => {
   try {
+    if (!process.env.ANTHROPIC_API_KEY) {
+      return res.status(500).json({ error: "Falta ANTHROPIC_API_KEY en Railway" });
+    }
+
     const userMessage = req.body.message;
 
-    // 🔹 1. Llamada a Claude
-    const claudeResponse = await fetch("https://api.anthropic.com/v1/messages", {
+    if (!userMessage) {
+      return res.status(400).json({ error: "No message provided" });
+    }
+
+    const response = await fetch("https://api.anthropic.com/v1/messages", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -31,12 +38,25 @@ app.post("/chat", async (req, res) => {
       body: JSON.stringify({
         model: "claude-3-5-sonnet-20241022",
         max_tokens: 200,
-        system: SYSTEM_PROMPT,
         messages: [
           { role: "user", content: userMessage }
         ]
       })
     });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      return res.status(500).json(data);
+    }
+
+    res.json({ reply: data.content[0].text });
+
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: "Server error" });
+  }
+});
 
     const claudeData = await claudeResponse.json();
     const textReply = claudeData.content[0].text;
