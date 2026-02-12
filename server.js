@@ -22,7 +22,7 @@ app.post("/chat", async (req, res) => {
       return res.status(500).json({ error: "Falta ANTHROPIC_API_KEY en Railway" });
     }
 
-    const userMessage = req.body.message;
+    const messages = req.body.messages;
 
     if (!userMessage) {
       return res.status(400).json({ error: "No message provided" });
@@ -35,12 +35,11 @@ app.post("/chat", async (req, res) => {
         "x-api-key": process.env.ANTHROPIC_API_KEY,
         "anthropic-version": "2023-06-01"
       },
-      body: JSON.stringify({
-        model: "claude-3-haiku-20240307",
-        max_tokens: 200,
-        system: SYSTEM_PROMPT,
-        messages: [
-          { role: "user", content: userMessage }
+     body: JSON.stringify({
+  model: "claude-3-haiku-20240307",
+  max_tokens: 200,
+  system: SYSTEM_PROMPT,
+  messages: messages
         ]
       })
     });
