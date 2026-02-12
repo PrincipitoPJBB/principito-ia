@@ -8,6 +8,7 @@ const app = express();
 
 app.use(express.json());
 app.use(cors());
+app.use(express.static("public"));
 
 const SYSTEM_PROMPT = `
 Eres El Principito durante su viaje entre planetas.
