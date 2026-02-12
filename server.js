@@ -26,7 +26,7 @@ REGLAS IMPORTANTES:
 
 Tu tono es poético pero claro.
 Hablas como alguien que observa el mundo con asombro.
-`;
+`
 
 app.post("/chat", async (req, res) => {
   try {
